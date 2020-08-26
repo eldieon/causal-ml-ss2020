@@ -67,7 +67,7 @@ def multilayer_hist(dict):
     plt.xlabel('Individual Treatment Effect (ITE/CATE)')
     plt.ylabel('# of Samples')
     _ = plt.legend()
-    plt.show()
+    #plt.show()
 
 
 def get_treated_obs_for_evaulation(X, y, te, w):
@@ -117,3 +117,7 @@ easy_t_preds = make_simple_predictions_for_stacking(X_easy_t, y_easy_t, w_easy_t
 multilayer_hist(easy_t_preds)
 
 thing = stacking_helpers.do_stacking(easy_t_preds, tau_easy_t)
+
+stacking_helpers.plot_stacking_preds(thing, tau_easy_t)
+
+mse_dict = stacking_helpers.evaluate_models_compare_to_stacking(easy_t_preds, tau_easy_t, thing.fittedvalues)
