@@ -1,24 +1,29 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.metrics import r2_score, mean_squared_error
+from causalml.dataset import *
+from causalml.metrics import *
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
+
 """
 HERE U EXPLAIN WHAT THIS SCRIPT IS FOR. 
 """
 
-
-def create_simple_ml_model(X_train, X_test, y_train, w_train, reg_):
+def create_simple_ml_model(X, y, w, tau, reg_):
     """
     helper function for make_simple_predictions_for_stacking(X_train, X_test, y_train, w_train, regressors)
 
-    :param X_train: X variables (floats) (training set)
-    :param X_test: X variables (floats) (testing set)
-    :param y_train: endogenous variable (float) (training set)
-    :param w_train: assignment to treatment (0 or 1) (training set)
+    :param X: X variables (floats)
+    :param y: endogenous variable (float)
+    :param w: assignment to treatment (0 or 1)
+    :param tau: true treatment effect
     :param reg_: a machine learning model instance
-    :return: the estimated treatment effect for the testing set,
-        as the difference between predicted outcome of treated and predicted outcome of untreated.
+    :return: the estimated treatment effect for the testing set, as the difference between predicted outcome of treated and predicted outcome of untreated, corresponding true treatmenet effect for each observation
     """
 
+    y_train, y_test, X_train, X_test, w_train, w_test, tau_train, tau_test = train_test_split(y, X, w, tau,
+                                                                                              test_size=0.25,
+                                                                                              random_state=42)
     df = pd.DataFrame(data=X_train)
     df['assignment'] = w_train
 
@@ -30,38 +35,59 @@ def create_simple_ml_model(X_train, X_test, y_train, w_train, reg_):
 
     X_pos = pd.DataFrame(data=X_test)
     X_pos['assignment'] = 1
-    ret = reg.predict(X_pos) - reg.predict(X_neg) ## this could just return predicitons for positive and negative...
-    return ret
+    ret = reg.predict(X_pos) - reg.predict(X_neg)  ## this could just return predicitons for positive and negative...
+    return ret, tau_test
 
 
-def make_simple_predictions_for_stacking(X_train, X_test, y_train, w_train, regressors):
+def make_simple_predictions_for_stacking(X, y, w, tau, regressors):
     """
-    :param X_train: X variables (floats) (training set)
-    :param X_test: X variables (floats) (testing set)
-    :param y_train: endogenous variable (float) (training set)
-    :param w_train: assignment to treatment (0 or 1) (training set)
+    :param X: X variables (floats)
+    :param y: endogenous variable (float)
+    :param w: assignment to treatment (0 or 1)
     :param regressors: dictionary of name, regressor
     :return: dict of regressors (name as string), predictions
     """
     predictions_dict = {}
 
     for name in regressors.keys():
-        preds = create_simple_ml_model(X_train, X_test, y_train, w_train, regressors[name])
+        preds, tau_test = create_simple_ml_model(X, y, w, tau, regressors[name])
         predictions_dict[name] = preds
 
-    return predictions_dict
+    return predictions_dict, tau_test
 
 
 # TODO: add average line to plot, add true treatment effect to plot.
-def multilayer_hist(dictionary, true_vals):
+def multilayer_hist(dictionary, true_vals, synthetic_data_func):
     """
     :param dictionary: a dictionary of predictions, keys as name of model
     :return: a plot of predicitons from each model in the dict
     """
 
     alpha = 0.2
+    bins = 50
+    plt.figure(figsize=(12, 8))
+    for name, predictions in dictionary.items():
+        plt.hist(predictions, alpha=alpha, bins=bins, label=name)
+
+    plt.hist(true_vals, alpha=alpha, bins=bins, label='te')
+
+    plt.axis([-4, 4, 0, 80])
+    plt.title('Predictions of individual treatment effect - ' + synthetic_data_func)
+    plt.xlabel('Individual Treatment Effect (ITE/CATE)')
+    plt.ylabel('# of Samples')
+    _ = plt.legend()
+    plt.show()
+
+
+####it doesnt make sense to plot all predictors individually against the sme true treatment effect when they can just as easily fit on the same plot.
+def multilayer_hist_individual_regressors(dictionary, true_vals):
+    """
+    :param dictionary: a dictionary of predictions, keys as name of model
+    :return: a plot of predicitons from each model in the dict
+    """
+    alpha = 0.2
     bins = 250
-  
+
     for name, predictions in dictionary.items():
         plt.hist(predictions, alpha=alpha, bins=bins, label=name)
         plt.hist(true_vals, alpha=alpha, bins=bins, label='te')
@@ -72,9 +98,9 @@ def multilayer_hist(dictionary, true_vals):
         plt.ylabel('# of Samples')
         _ = plt.legend()
         plt.show()
-        print("r2 score is:"+str(r2_score(true_vals, predictions)))
-        print("MSE is:"+str(mean_squared_error(true_vals, predictions)))
-    
+        print("r2 score is:" + str(r2_score(true_vals, predictions)))
+        print("MSE is:" + str(mean_squared_error(true_vals, predictions)))
+
 
 def get_treated_obs_for_evaulation(X, y, te, w):
     """
@@ -92,4 +118,17 @@ def get_treated_obs_for_evaulation(X, y, te, w):
 
     return new_data, new_outcome, new_treatment_effect
 
-#TODO: generate a table for showing mse of each learner? then mse as in the group ? something like that.
+
+def compare_single_models(X, y, w, tau, regressors):
+    """
+    :param regressors: dict of regressors to make predcitons for treatment effect
+    :param X: Dataset of independent variables
+    :param y: outcome variable
+    :param w: assignment variable
+    :param tau: true treatment effect
+    :return: predicitons dict, true treatmenet effect of the test set
+    """
+
+    predicitons, tau_test = make_simple_predictions_for_stacking(X, y, w, tau, regressors)
+
+    return predicitons, tau_test
