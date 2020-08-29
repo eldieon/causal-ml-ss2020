@@ -30,7 +30,7 @@ def create_simple_ml_model(X_train, X_test, y_train, w_train, reg_):
 
     X_pos = pd.DataFrame(data=X_test)
     X_pos['assignment'] = 1
-    ret = reg.predict(X_pos) - reg.predict(X_neg)
+    ret = reg.predict(X_pos) - reg.predict(X_neg) ## this could just return predicitons for positive and negative...
     return ret
 
 
