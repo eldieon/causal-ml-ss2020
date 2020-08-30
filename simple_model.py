@@ -57,29 +57,28 @@ def make_simple_predictions_for_stacking(X, y, w, tau, regressors):
 
 
 # TODO: add average line to plot, add true treatment effect to plot.
-def multilayer_hist(dictionary, true_vals, synthetic_data_func):
+def multilayer_hist(dictionary, true_vals, synthetic_data_func, subplot):
     """
     :param dictionary: a dictionary of predictions, keys as name of model
     :return: a plot of predicitons from each model in the dict
     """
-
+    plt.subplot(subplot)
     alpha = 0.2
     bins = 50
-    plt.figure(figsize=(12, 8))
     for name, predictions in dictionary.items():
         plt.hist(predictions, alpha=alpha, bins=bins, label=name)
 
     plt.hist(true_vals, alpha=alpha, bins=bins, label='te')
 
     plt.axis([-4, 4, 0, 80])
-    plt.title('Predictions of individual treatment effect - ' + synthetic_data_func)
-    plt.xlabel('Individual Treatment Effect (ITE/CATE)')
-    plt.ylabel('# of Samples')
+    #plt.title('Predictions of individual treatment effect - ' + synthetic_data_func)
+    #plt.xlabel('Individual Treatment Effect (ITE/CATE)')
+    #plt.ylabel('# of Samples')
     _ = plt.legend()
-    plt.show()
+    #plt.show()
 
 
-####it doesnt make sense to plot all predictors individually against the sme true treatment effect when they can just as easily fit on the same plot.
+####it doesnt make sense to plot all predictors individually against the same true treatment effect when they can just as easily fit on the same plot.
 def multilayer_hist_individual_regressors(dictionary, true_vals):
     """
     :param dictionary: a dictionary of predictions, keys as name of model

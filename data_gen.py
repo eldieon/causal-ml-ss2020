@@ -1,7 +1,6 @@
 from causalml.dataset import *
 import matplotlib.pyplot as plt
 
-
 def treated_vs_untreated_plot(y, w, setup, subplot):
     plt.subplot(subplot)
     alpha = 0.2
