@@ -15,6 +15,9 @@ from causalml.dataset import *
 from causalml.metrics import *
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
+from IPython.display import display, HTML
+import pandas as pd
+
 
 import simple_model
 
@@ -108,6 +111,12 @@ def evaluate_models_compare_to_stacking_r_square(predictions_dict, true_treatmen
     return r2_dict
 
 
+def show_MSE_r_square(indv_predictions, tau_test, ensemble_predictions):
+    mseDict = evaluate_models_compare_to_stacking_mse(indv_predictions, tau_test, ensemble_predictions)
+    r2Dict = evaluate_models_compare_to_stacking_r_square(indv_predictions, tau_test, ensemble_predictions)
 
+    mseDf = pd.DataFrame(mseDict, index=['MSE',])
+    r2DF = pd.DataFrame(r2Dict, index=['R-Squared',])
 
-
+    display(mseDf)
+    display(r2DF)

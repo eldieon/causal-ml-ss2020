@@ -12,6 +12,8 @@ HERE U EXPLAIN WHAT THIS SCRIPT IS FOR.
 def create_simple_ml_model(X, y, w, tau, reg_):
     """
     helper function for make_simple_predictions_for_stacking(X_train, X_test, y_train, w_train, regressors)
+    follows the methodology of the S-learner; fit a model to treatment and control groups together,
+    and then estimate the treatment effect as the difference of each function.
 
     :param X: X variables (floats)
     :param y: endogenous variable (float)
@@ -24,6 +26,7 @@ def create_simple_ml_model(X, y, w, tau, reg_):
     y_train, y_test, X_train, X_test, w_train, w_test, tau_train, tau_test = train_test_split(y, X, w, tau,
                                                                                               test_size=0.25,
                                                                                               random_state=42)
+    #learn the treatment and control groups together
     df = pd.DataFrame(data=X_train)
     df['assignment'] = w_train
 
