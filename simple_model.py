@@ -78,7 +78,6 @@ def multilayer_hist(dictionary, true_vals, subplot):
 
     plt.axis([-4, 4, 0, 80])
     _ = plt.legend()
-    #plt.show()
 
 
 ####it doesnt make sense to plot all predictors individually against the same true treatment effect when they can just as easily fit on the same plot.
