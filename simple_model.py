@@ -5,6 +5,7 @@ from causalml.metrics import *
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
+
 """
 HERE U EXPLAIN WHAT THIS SCRIPT IS FOR. 
 """
@@ -60,9 +61,11 @@ def make_simple_predictions_for_stacking(X, y, w, tau, regressors):
 
 
 # TODO: add average line to plot, add true treatment effect to plot.
-def multilayer_hist(dictionary, true_vals, synthetic_data_func, subplot):
+def multilayer_hist(dictionary, true_vals, subplot):
     """
     :param dictionary: a dictionary of predictions, keys as name of model
+    :param true_vals: true treatment effect or outcome prediction
+    :param subplot: param for matplotlib.plot subplot
     :return: a plot of predicitons from each model in the dict
     """
     plt.subplot(subplot)
@@ -74,9 +77,6 @@ def multilayer_hist(dictionary, true_vals, synthetic_data_func, subplot):
     plt.hist(true_vals, alpha=alpha, bins=bins, label='te')
 
     plt.axis([-4, 4, 0, 80])
-    #plt.title('Predictions of individual treatment effect - ' + synthetic_data_func)
-    #plt.xlabel('Individual Treatment Effect (ITE/CATE)')
-    #plt.ylabel('# of Samples')
     _ = plt.legend()
     #plt.show()
 
@@ -97,7 +97,7 @@ def multilayer_hist_individual_regressors(dictionary, true_vals):
         plt.axis([-5, 5, 0, 60])
         plt.title('simple predictions of individual treatment effect.')
         plt.xlabel('Individual Treatment Effect (ITE/CATE)')
-        plt.ylabel('# of Samples')
+        plt.ylabel('number of observations')
         _ = plt.legend()
         plt.show()
         print("r2 score is:" + str(r2_score(true_vals, predictions)))

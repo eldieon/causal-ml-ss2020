@@ -18,6 +18,7 @@ from sklearn.model_selection import train_test_split
 from IPython.display import display, HTML
 import pandas as pd
 
+import copy
 
 import simple_model
 
@@ -29,7 +30,11 @@ def do_stacking(predictions_dict, true_te):
 
     :return: a dict of params.
     """
-    x_stacking = np.vstack((predictions_dict.values())).T
+    pd = copy.deepcopy(predictions_dict)
+    pd.pop('Actuals')
+    pd.pop('generated_data')
+
+    x_stacking = np.vstack((pd.values())).T
 
     model = sm.OLS(true_te, x_stacking)
     model2 = model.fit_regularized(alpha=0.0, L1_wt=1.0, start_params=None, profile_scale=False, refit=False)
@@ -112,6 +117,13 @@ def evaluate_models_compare_to_stacking_r_square(predictions_dict, true_treatmen
 
 
 def show_MSE_r_square(indv_predictions, tau_test, ensemble_predictions):
+    """
+    :param indv_predictions: dict of predicted treatmenet effects from individual, somple models
+    :param tau_test: true treatment effect (corresponding to predictions of indv_predictions)
+    :param ensemble_predictions: predicted treatmenet effect of the ensemble
+    :return: visualize a table of mse and R squared.
+    """
+
     mseDict = evaluate_models_compare_to_stacking_mse(indv_predictions, tau_test, ensemble_predictions)
     r2Dict = evaluate_models_compare_to_stacking_r_square(indv_predictions, tau_test, ensemble_predictions)
 
