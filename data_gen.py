@@ -1,6 +1,7 @@
 from causalml.dataset import *
 from causalml.inference.meta import BaseRRegressor
 from causalml.inference.meta import BaseTRegressor
+from causalml.inference.meta import BaseSRegressor
 from causalml.metrics.visualize import *
 from sklearn.linear_model import LinearRegression
 from xgboost import XGBRegressor

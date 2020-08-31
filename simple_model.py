@@ -16,6 +16,12 @@ def create_simple_ml_model(X, y, w, tau, reg_):
     follows the methodology of the S-learner; fit a model to treatment and control groups together,
     and then estimate the treatment effect as the difference of each function.
 
+    NOTE THE DIFFERENCE BETWEEN THIS FUNCTION AND THE LITERATURE Kunzel et al. (2018) (https://arxiv.org/abs/1706.03461):
+    Kunzel: "The predicted CATE for an individual unit is then the difference between the predicted values when
+    the treatment assignment indicator is changed from control to treatment, with all other features held fixed."
+
+    (create_simple_ml_model does not do that.)
+
     :param X: X variables (floats)
     :param y: endogenous variable (float)
     :param w: assignment to treatment (0 or 1)

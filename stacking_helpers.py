@@ -131,14 +131,14 @@ def fit_and_eval_learners(predictions, predictions_test, data_generating_func):
     predictions_copy = copy.deepcopy(predictions)
     [predictions_copy.pop(key) for key in ['Actuals', 'generated_data']]
 
-    # compare single R learners on their own
-    simple_model.multilayer_hist(predictions_copy, predictions['Actuals'], 121, xmin=-10, xmax=10, ymax=100)
+    # compare single learners on their own
+    simple_model.multilayer_hist(predictions_copy, predictions['Actuals'], 121, xmin=-10, xmax=10, ymax=80)
     plt.title('Distribution of CATE Predictions \nby input algorithm:\n' + data_generating_func)
     plt.xlabel('Individual Treatment Effect (ITE/CATE)')
     plt.ylabel('number of observations')
     _ = plt.legend()
 
-    # fit an ensemble using the predictions of the R learner
+    # fit an ensemble using the predictions of the learners
     ens_model = do_stacking(predictions, predictions['Actuals'])
 
     predictions_test_copy = copy.deepcopy(predictions_test)
@@ -149,7 +149,7 @@ def fit_and_eval_learners(predictions, predictions_test, data_generating_func):
 
     final_predictions = np.dot(testdf, ens_model.params)
 
-    simple_model.multilayer_hist({'ensemble_R_learner': final_predictions}, predictions_test['Actuals'], 122, xmin=-10, xmax= 10, ymax=80)
+    simple_model.multilayer_hist({'ensemble': final_predictions}, predictions_test['Actuals'], 122, xmin=-10, xmax= 10, ymax=80)
     plt.title('distribution of stacked \nCATE estimates:\n' + data_generating_func)
     plt.xlabel('Individual Treatment Effect (ITE/CATE)')
     plt.ylabel('number of observations')
