@@ -10,4 +10,9 @@ The helper functions are divided into three major parts:
 - **simple_model.py** : functions used to fit a simple machine learning model from synthetic data, and to visualise predictions made by a  model or group of models.
 - **stacking_helpers.py** : functions used for stacking predictions resulting from the simple_model module, as well as visualization, and evaluation functions
 
-The notebook and helper funcitons are written with python3
+The notebook and helper functions are written with python3
+
+NB: a strange, perhaps jupyter cache related bug of this notebook, is that one of the last plots generated in the notebook often appears first in the notebook when viewed in the browser. 
+Re-running the cell will remove this plot. 
+
+the github repository for this notebook and related scripts can be found here: https://github.com/eldieon/causal-ml-ss2020
