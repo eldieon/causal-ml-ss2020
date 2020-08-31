@@ -1,14 +1,9 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from causalml.dataset import *
 from causalml.metrics import *
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
-
-"""
-HERE U EXPLAIN WHAT THIS SCRIPT IS FOR. 
-"""
 
 def create_simple_ml_model(X, y, w, tau, reg_):
     """
@@ -33,7 +28,7 @@ def create_simple_ml_model(X, y, w, tau, reg_):
     y_train, y_test, X_train, X_test, w_train, w_test, tau_train, tau_test = train_test_split(y, X, w, tau,
                                                                                               test_size=0.25,
                                                                                               random_state=42)
-    #learn the treatment and control groups together
+    # learn the treatment and control groups together
     df = pd.DataFrame(data=X_train)
     df['assignment'] = w_train
 
@@ -45,7 +40,7 @@ def create_simple_ml_model(X, y, w, tau, reg_):
 
     X_pos = pd.DataFrame(data=X_test)
     X_pos['assignment'] = 1
-    ret = reg.predict(X_pos) - reg.predict(X_neg)  ## this could just return predicitons for positive and negative...
+    ret = reg.predict(X_pos) - reg.predict(X_neg)
     return ret, tau_test
 
 
