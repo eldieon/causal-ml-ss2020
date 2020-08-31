@@ -61,11 +61,12 @@ def make_simple_predictions_for_stacking(X, y, w, tau, regressors):
 
 
 # TODO: add average line to plot, add true treatment effect to plot.
-def multilayer_hist(dictionary, true_vals, subplot):
+def multilayer_hist(dictionary, true_vals, subplot, xmin=-4, xmax=4, ymin=0, ymax=80):
     """
     :param dictionary: a dictionary of predictions, keys as name of model
     :param true_vals: true treatment effect or outcome prediction
     :param subplot: param for matplotlib.plot subplot
+    :param xmin, xmax, ymin, ymax: param for matplotlib.plot subplot axis limits
     :return: a plot of predicitons from each model in the dict
     """
     plt.subplot(subplot)
@@ -76,7 +77,7 @@ def multilayer_hist(dictionary, true_vals, subplot):
 
     plt.hist(true_vals, alpha=alpha, bins=bins, label='te')
 
-    plt.axis([-4, 4, 0, 80])
+    plt.axis([xmin, xmax, ymin, ymax])
     _ = plt.legend()
 
 
